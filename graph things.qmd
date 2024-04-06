@@ -36,6 +36,11 @@ FertilizerConsumption <- read.csv("C:/Users/julis/Downloads/FertilizerConsumptio
 
 Crops <- read.csv("C:/Users/julis/Downloads/Crops.csv")
 
+
+```
+
+```{r graphs}
+
 Crops |>
   filter(Year == "2010")|>
   group_by(Ag.District)|>
@@ -45,7 +50,7 @@ Crops |>
 Crops |>
   filter(Year == "2011")|>
   group_by(Ag.District)|>
-    ggplot(aes(x = SOYBEANS...PRODUCTION..MEASURED.IN.BU, color = Ag.District))+
+    ggplot(aes(x = SOYBEANS...PRODUCTION..MEASURED.IN.BU, fill = Ag.District))+
   geom_histogram()+
   facet_wrap(~Ag.District)
 
