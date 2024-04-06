@@ -34,7 +34,7 @@ tillable <- read.csv("TillableLand.csv")
 
 FertilizerConsumption <- read.csv("FertilizerConsumption.csv")
 
-Crops <- read.csv("C:/Users/julis/Downloads/Crops.csv")
+Crops <- read.csv("Crops.csv")
 
 
 ```
