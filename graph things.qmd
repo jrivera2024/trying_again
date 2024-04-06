@@ -24,15 +24,15 @@ You can add options to executable code like this
 ```{r loading-data-set}
 
 
-animals <- read.csv("C:/Users/julis/Downloads/Animals.csv")
+animals <- read.csv("Animals.csv")
 
-CropProductivityIndex <- read.csv("C:/Users/julis/Downloads/CropProductivityIndex.csv")
+CropProductivityIndex <- read.csv("CropProductivityIndex.csv")
 
-AgDistricts <- read.csv("C:/Users/julis/Downloads/AgDistricts.csv")
+AgDistricts <- read.csv("AgDistricts.csv")
 
-tillable <- read.csv("C:/Users/julis/Downloads/TillableLand.csv")
+tillable <- read.csv("TillableLand.csv")
 
-FertilizerConsumption <- read.csv("C:/Users/julis/Downloads/FertilizerConsumption.csv")
+FertilizerConsumption <- read.csv("FertilizerConsumption.csv")
 
 Crops <- read.csv("C:/Users/julis/Downloads/Crops.csv")
 
