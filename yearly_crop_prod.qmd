@@ -1,0 +1,36 @@
+---
+author: "Julissa Rivera & Jake Vuolo"
+title: "Yearly Analysis: Crop Percent Yield"
+date: "4/6/2024"
+---
+
+Main Goals of this section
+
+-   Statewide crop yields
+-   District Wide Yields
+-   Yield by Crop
+-   Spectrum of low to high yields
+
+```{r library-load}
+#|echo = false
+
+library(tidyr)
+library(tidyverse)
+
+```
+
+\
+\
+
+```{r cron-analysis}
+
+
+crops <- read.csv("Crops.csv")
+
+
+crops |>
+  group_by(Ag.District)|>
+  filter(Year == "2010") |>
+  summarise(mean = mean(CORN...ACRES.PLANTED))
+
+```
