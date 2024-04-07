@@ -182,23 +182,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="fertilizer" class="level3">
 <h3 class="anchored" data-anchor-id="fertilizer">Fertilizer</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>FertilizerConsumption <span class="sc">|&gt;</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Ag.District, Ammonia..<span class="dv">82</span>.<span class="dv">0</span>.<span class="fl">0.</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Ag.District) <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fert_con <span class="ot">&lt;-</span> FertilizerConsumption <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Ag.District, Ammonia..<span class="dv">82</span>.<span class="dv">0</span>.<span class="fl">0.</span>, Year) <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Ag.District, Year) <span class="sc">|&gt;</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_use_ammonia =</span> <span class="fu">sum</span>(Ammonia..<span class="dv">82</span>.<span class="dv">0</span>.<span class="fl">0.</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9 × 2
-  Ag.District   total_use_ammonia
-  &lt;chr&gt;                     &lt;int&gt;
-1 CENTRAL                  416512
-2 EAST CENTRAL              17137
-3 NORTH CENTRAL               381
-4 NORTHEAST                    20
-5 NORTHWEST                273198
-6 SOUTH CENTRAL            818534
-7 SOUTHEAST                404909
-8 SOUTHWEST                332376
-9 WEST CENTRAL             339387</code></pre>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Ag.District'. You can override using the
+`.groups` argument.</code></pre>
 </div>
 </div>
 </section>
@@ -207,68 +197,108 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#shit </span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>shitty_animals <span class="ot">&lt;-</span> animals <span class="sc">|&gt;</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(CATTLE..COWS..MILK...INVENTORY,CATTLE..COWS..BEEF...INVENTORY, HOGS...INVENTORY, TURKEYS...INVENTORY,Year.of.County_Animals, Ag.District) <span class="sc">|&gt;</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Ag.District) <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(CATTLE..COWS..MILK...INVENTORY,CATTLE..COWS..BEEF...INVENTORY, HOGS...INVENTORY, TURKEYS...INVENTORY, Ag.District, Year.of.County_Animals) <span class="sc">|&gt;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Ag.District, Year.of.County_Animals) <span class="sc">|&gt;</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">totalshit_milk =</span> <span class="fu">sum</span>(CATTLE..COWS..MILK...INVENTORY<span class="sc">*</span><span class="dv">155</span>, <span class="at">na.rm=</span>T),</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">totalshit_beef =</span> <span class="fu">sum</span>(CATTLE..COWS..BEEF...INVENTORY<span class="sc">*</span><span class="dv">54</span>,<span class="at">na.rm =</span> T),</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">totalshit_hogs =</span> <span class="fu">sum</span>(HOGS...INVENTORY<span class="sc">*</span><span class="fl">14.8</span>, <span class="at">na.rm =</span> T),</span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">totalshit_turkeys =</span> <span class="fu">sum</span>(TURKEYS...INVENTORY<span class="sc">*</span>.<span class="dv">47</span>, <span class="at">na.rm =</span> T)) <span class="sc">|&gt;</span></span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Maximum_shit =</span> totalshit_milk <span class="sc">+</span> totalshit_beef <span class="sc">+</span> totalshit_hogs <span class="sc">+</span> totalshit_turkeys) <span class="sc">|&gt;</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Maximum_shit))</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>shitty_animals <span class="sc">|&gt;</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Ag.District, Maximum_shit) <span class="sc">|&gt;</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Maximum_shit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9 × 2
-  Ag.District   Maximum_shit
-  &lt;chr&gt;                &lt;dbl&gt;
-1 CENTRAL         488232083.
-2 SOUTHEAST       321001523.
-3 SOUTH CENTRAL   244896859.
-4 SOUTHWEST       197649595.
-5 WEST CENTRAL    174640904.
-6 NORTHWEST        67089130.
-7 EAST CENTRAL     59641925.
-8 NORTH CENTRAL    23880787.
-9 NORTHEAST         5568202.</code></pre>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Maximum_shit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Ag.District'. You can override using the
+`.groups` argument.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#total animals</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>total_animals <span class="ot">&lt;-</span> animals<span class="sc">|&gt;</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(CATTLE..COWS..MILK...INVENTORY,CATTLE..COWS..BEEF...INVENTORY, HOGS...INVENTORY, TURKEYS...INVENTORY,Year.of.County_Animals, Ag.District) <span class="sc">|&gt;</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Ag.District) <span class="sc">|&gt;</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_milk =</span> <span class="fu">sum</span>(CATTLE..COWS..MILK...INVENTORY, <span class="at">na.rm=</span>T),</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">total_beef =</span> <span class="fu">sum</span>(CATTLE..COWS..BEEF...INVENTORY,<span class="at">na.rm =</span> T),</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">total_hogs =</span> <span class="fu">sum</span>(HOGS...INVENTORY, <span class="at">na.rm =</span> T),</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">total_turkeys =</span> <span class="fu">sum</span>(TURKEYS...INVENTORY, <span class="at">na.rm =</span> T))<span class="sc">|&gt;</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Max_animals =</span> total_milk <span class="sc">+</span> total_beef <span class="sc">+</span> total_hogs <span class="sc">+</span> total_turkeys)</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>total_animals <span class="sc">|&gt;</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Ag.District, Max_animals) <span class="sc">|&gt;</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Max_animals))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>max_manure <span class="ot">&lt;-</span> shitty_animals <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Ag.District, Maximum_shit, Year.of.County_Animals) <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Maximum_shit))</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#total animals</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>total_animals <span class="ot">&lt;-</span> animals<span class="sc">|&gt;</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(CATTLE..COWS..MILK...INVENTORY,CATTLE..COWS..BEEF...INVENTORY, HOGS...INVENTORY, TURKEYS...INVENTORY,Year.of.County_Animals, Ag.District, Year.of.County_Animals) <span class="sc">|&gt;</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Ag.District, Year.of.County_Animals) <span class="sc">|&gt;</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_milk =</span> <span class="fu">sum</span>(CATTLE..COWS..MILK...INVENTORY, <span class="at">na.rm=</span>T),</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">total_beef =</span> <span class="fu">sum</span>(CATTLE..COWS..BEEF...INVENTORY,<span class="at">na.rm =</span> T),</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">total_hogs =</span> <span class="fu">sum</span>(HOGS...INVENTORY, <span class="at">na.rm =</span> T),</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">total_turkeys =</span> <span class="fu">sum</span>(TURKEYS...INVENTORY, <span class="at">na.rm =</span> T))<span class="sc">|&gt;</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Max_animals =</span> total_milk <span class="sc">+</span> total_beef <span class="sc">+</span> total_hogs <span class="sc">+</span> total_turkeys)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Ag.District'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>total_animals <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Ag.District, Max_animals, Year.of.County_Animals) <span class="sc">|&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Max_animals))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9 × 2
-  Ag.District   Max_animals
-  &lt;chr&gt;               &lt;int&gt;
-1 CENTRAL          29231678
-2 SOUTH CENTRAL    15667054
-3 SOUTHWEST        11792367
-4 WEST CENTRAL     11577479
-5 SOUTHEAST         6855659
-6 NORTHWEST         2921943
-7 EAST CENTRAL       747961
-8 NORTH CENTRAL      397728
-9 NORTHEAST           77838</code></pre>
+<pre><code># A tibble: 126 × 3
+# Groups:   Ag.District [9]
+   Ag.District   Max_animals Year.of.County_Animals
+   &lt;chr&gt;               &lt;int&gt;                  &lt;int&gt;
+ 1 CENTRAL           9677201                   2017
+ 2 CENTRAL           9273824                   2012
+ 3 CENTRAL           7554353                   2022
+ 4 SOUTH CENTRAL     5410784                   2017
+ 5 SOUTH CENTRAL     5012624                   2012
+ 6 SOUTH CENTRAL     4647546                   2022
+ 7 WEST CENTRAL      4393951                   2012
+ 8 SOUTHWEST         3961216                   2022
+ 9 SOUTHWEST         3877191                   2017
+10 SOUTHWEST         3208760                   2012
+# ℹ 116 more rows</code></pre>
 </div>
 </div>
 </section>
-</section>
-<section id="join-fertilizer" class="level2">
-<h2 class="anchored" data-anchor-id="join-fertilizer">Join Fertilizer</h2>
+<section id="joined-fertamm" class="level3">
+<h3 class="anchored" data-anchor-id="joined-fertamm">joined fert/amm</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#joined_firt &lt;- FertilizerConsumption |&gt;</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># left_join(</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(max_manure)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 126
+Columns: 3
+Groups: Ag.District [9]
+$ Ag.District            &lt;chr&gt; "SOUTH CENTRAL", "SOUTH CENTRAL", "SOUTH CENTRA…
+$ Maximum_shit           &lt;dbl&gt; 59722506, 58858460, 55120292, 49990716, 4782463…
+$ Year.of.County_Animals &lt;int&gt; 2017, 2022, 2012, 2022, 2012, 2017, 2022, 2017,…</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>joined_amm_shit <span class="ot">&lt;-</span> <span class="fu">left_join</span>(fert_con, max_manure, <span class="fu">join_by</span>(<span class="st">"Year"</span> <span class="sc">==</span> <span class="st">"Year.of.County_Animals"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in left_join(fert_con, max_manure, join_by("Year" == "Year.of.County_Animals")): Detected an unexpected many-to-many relationship between `x` and `y`.
+ℹ Row 1 of `x` matches multiple rows in `y`.
+ℹ Row 13 of `y` matches multiple rows in `x`.
+ℹ If a many-to-many relationship is expected, set `relationship =
+  "many-to-many"` to silence this warning.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>joined_amm_shit <span class="sc">|&gt;</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Ag.District.x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 891 × 5
+# Groups:   Ag.District.x [9]
+   Ag.District.x  Year total_use_ammonia Ag.District.y Maximum_shit
+   &lt;chr&gt;         &lt;int&gt;             &lt;int&gt; &lt;chr&gt;                &lt;dbl&gt;
+ 1 CENTRAL        2010             48659 CENTRAL           32711700
+ 2 CENTRAL        2010             48659 SOUTHEAST         21608600
+ 3 CENTRAL        2010             48659 WEST CENTRAL      11951500
+ 4 CENTRAL        2010             48659 SOUTH CENTRAL      6709300
+ 5 CENTRAL        2010             48659 SOUTHWEST          6422900
+ 6 CENTRAL        2010             48659 NORTHWEST          5753000
+ 7 CENTRAL        2010             48659 EAST CENTRAL       5138800
+ 8 CENTRAL        2010             48659 NORTH CENTRAL      2112000
+ 9 CENTRAL        2010             48659 NORTHEAST           417500
+10 CENTRAL        2011             43431 CENTRAL           32501100
+# ℹ 881 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>joined_amm_shit <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> total_use_ammonia, <span class="at">color =</span> Ag.District.x)) <span class="sc">+</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">se =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using method = 'loess' and formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="graph-things_files/figure-html/joined-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
 </section>
 </section>
 

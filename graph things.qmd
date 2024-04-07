@@ -58,17 +58,17 @@ The `echo: false` option disables the printing of code (only output is displayed
 ### Fertilizer
 ```{r fertilizer_ammonia}
 
-FertilizerConsumption |>
-  select(Ag.District, Ammonia..82.0.0.) |>
-  group_by(Ag.District) |>
+fert_con <- FertilizerConsumption |>
+  select(Ag.District, Ammonia..82.0.0., Year) |>
+  group_by(Ag.District, Year) |>
   summarise(total_use_ammonia = sum(Ammonia..82.0.0.))
 ```
 ### Ammonia Vs Manure
 ```{r fert_man}
 #shit 
 shitty_animals <- animals |>
-  select(CATTLE..COWS..MILK...INVENTORY,CATTLE..COWS..BEEF...INVENTORY, HOGS...INVENTORY, TURKEYS...INVENTORY,Year.of.County_Animals, Ag.District) |>
-  group_by(Ag.District) |>
+  select(CATTLE..COWS..MILK...INVENTORY,CATTLE..COWS..BEEF...INVENTORY, HOGS...INVENTORY, TURKEYS...INVENTORY, Ag.District, Year.of.County_Animals) |>
+  group_by(Ag.District, Year.of.County_Animals) |>
   summarise(totalshit_milk = sum(CATTLE..COWS..MILK...INVENTORY*155, na.rm=T),
             totalshit_beef = sum(CATTLE..COWS..BEEF...INVENTORY*54,na.rm = T),
             totalshit_hogs = sum(HOGS...INVENTORY*14.8, na.rm = T),
@@ -76,14 +76,14 @@ shitty_animals <- animals |>
   mutate(Maximum_shit = totalshit_milk + totalshit_beef + totalshit_hogs + totalshit_turkeys) |>
   arrange(desc(Maximum_shit))
 
-shitty_animals |>
-  select(Ag.District, Maximum_shit) |>
+max_manure <- shitty_animals |>
+  select(Ag.District, Maximum_shit, Year.of.County_Animals) |>
   arrange(desc(Maximum_shit))
 
 #total animals
 total_animals <- animals|>
-  select(CATTLE..COWS..MILK...INVENTORY,CATTLE..COWS..BEEF...INVENTORY, HOGS...INVENTORY, TURKEYS...INVENTORY,Year.of.County_Animals, Ag.District) |>
-  group_by(Ag.District) |>
+  select(CATTLE..COWS..MILK...INVENTORY,CATTLE..COWS..BEEF...INVENTORY, HOGS...INVENTORY, TURKEYS...INVENTORY,Year.of.County_Animals, Ag.District, Year.of.County_Animals) |>
+  group_by(Ag.District, Year.of.County_Animals) |>
   summarise(total_milk = sum(CATTLE..COWS..MILK...INVENTORY, na.rm=T),
             total_beef = sum(CATTLE..COWS..BEEF...INVENTORY,na.rm = T),
             total_hogs = sum(HOGS...INVENTORY, na.rm = T),
@@ -91,16 +91,23 @@ total_animals <- animals|>
   mutate(Max_animals = total_milk + total_beef + total_hogs + total_turkeys)
 
 total_animals |>
-  select(Ag.District, Max_animals) |>
+  select(Ag.District, Max_animals, Year.of.County_Animals) |>
   arrange(desc(Max_animals))
                                                   
 ```
-## Join Fertilizer 
-```{r join_firt_animals}
+### joined fert/amm
+```{r joined}
+glimpse(max_manure)
 
-#joined_firt <- FertilizerConsumption |>
- # left_join(
+joined_amm_shit <- left_join(fert_con, max_manure, join_by("Year" == "Year.of.County_Animals")) 
 
+joined_amm_shit |>
+  group_by(Ag.District.x)
 
+joined_amm_shit |>
+  ggplot(aes(x = Year, y = total_use_ammonia, color = Ag.District.x)) +
+  geom_point() +
+  geom_smooth(se = FALSE)
 ```
+
 
