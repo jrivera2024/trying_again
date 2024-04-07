@@ -35,7 +35,7 @@ tillable <- read.csv("TillableLand.csv")
 FertilizerConsumption <- read.csv("FertilizerConsumption.csv")
 
 Crops <- read.csv("Crops.csv")
-
+Fertilizer_Con <- read.csv("FertilizerConsumption.csv")
 
 ```
 
@@ -59,6 +59,7 @@ corn_10 <- Crops |>
   filter(Year == "2010")|>
   ggplot(aes(x = CORN..GRAIN...PRODUCTION..MEASURED.IN.BU, fill = Ag.District))+
   geom_dotplot()
+print(corn_10)
 
 ```
 
