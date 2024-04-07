@@ -10,60 +10,67 @@ library(tidyr)
 library(dplyr)
 library(patchwork)
 
-```
-
-Soybeans
-
--   mean, median, stan dev
-
-```{r fertilizer_ammonia}
-
-FertilizerConsumption |>
-  select(Ag.District, Ammonia..82.0.0.) |>
-  group_by(Ag.District) |>
-  summarise(total_use_ammonia = sum(Ammonia..82.0.0.))
-
-print(fert_con)
-```
-
-```{r fert_man}
-shitty_animals <- animals |>
-  select(CATTLE..COWS..MILK...INVENTORY,CATTLE..COWS..BEEF...INVENTORY, HOGS...INVENTORY, TURKEYS...INVENTORY,Year.of.County_Animals, Ag.District) |>
-  group_by(Ag.District) |>
-  summarise(totalshit_milk = sum(CATTLE..COWS..MILK...INVENTORY*155, na.rm=T),
-            totalshit_beef = sum(CATTLE..COWS..BEEF...INVENTORY*54,na.rm = T),
-            totalshit_hogs = sum(HOGS...INVENTORY*14.8, na.rm = T),
-            totalshit_turkeys = sum(TURKEYS...INVENTORY*.47, na.rm = T)) |>
-  mutate(Maximum_shit = totalshit_milk + totalshit_beef + totalshit_hogs + totalshit_turkeys) |>
-  arrange(desc(Maximum_shit))
-
-max_manure <- shitty_animals |>
-  select(Ag.District, Maximum_shit) |>
-  arrange(desc(Maximum_shit))
-
-total_animals <- animals|>
-  select(CATTLE..COWS..MILK...INVENTORY,CATTLE..COWS..BEEF...INVENTORY, HOGS...INVENTORY, TURKEYS...INVENTORY,Year.of.County_Animals, Ag.District) |>
-  group_by(Ag.District) |>
-  summarise(total_milk = sum(CATTLE..COWS..MILK...INVENTORY, na.rm=T),
-            total_beef = sum(CATTLE..COWS..BEEF...INVENTORY,na.rm = T),
-            total_hogs = sum(HOGS...INVENTORY, na.rm = T),
-            total_turkeys = sum(TURKEYS...INVENTORY, na.rm = T))|>
-  mutate(Max_animals = total_milk + total_beef + total_hogs + total_turkeys)
-
-total_animals |>
-  select(Ag.District, Max_animals) |>
-  arrange(desc(Max_animals))
-                                                  
-```
-## Join Fertilizer 
-
-```{r}
-
-ammonia_manure_joined <- left_join(max_manure, fert_con, by = "Ag.District")
-
-ammonia_manure_joined
-
+library(readr)
 
 ```
-```
 
+```{r gassy}
+
+library(readr)
+emissions_1 <- read_csv("emissions_1.csv")
+View(emissions_1)
+
+```
+```{r em1}
+
+emissions_1$"2011_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2011`))
+emissions_1$"2012_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2012`))
+emissions_1$"2013_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2013`))
+emissions_1$"2014_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2014`))
+emissions_1$"2015_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2015`))
+emissions_1$"2016_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2016`))
+emissions_1$"2017_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2017`))
+emissions_1$"2018_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2018`))
+emissions_1$"2019_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2019`))
+emissions_1$"2020_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2020`))
+
+emissions_1 <- emissions_1 |>
+  na.omit()
+
+emissions_2 <- emissions_1 |>
+  select("2011_emissions","2012_emissions",
+         "2013_emissions","2014_emissions",
+         "2015_emissions","2016_emissions",
+         "2017_emissions","2018_emissions",
+         "2019_emissions","2020_emissions") 
+
+
+summed_emissions <- emissions_2|>
+  summarise(`2011` = sum(`2011_emissions`), 
+            `2012` = sum(`2012_emissions`),
+            `2013` = sum(`2013_emissions`), 
+            `2014` = sum(`2014_emissions`),
+            `2015` = sum(`2015_emissions`),
+            `2016` = sum(`2016_emissions`),
+            `2017` = sum(`2017_emissions`),
+            `2018` = sum(`2018_emissions`),
+            `2019` = sum(`2019_emissions`),
+            `2020` = sum(`2020_emissions`)) 
+
+summed_emissions
+            
+summed_emissions_pivot <- pivot_longer(summed_emissions, cols = 1:10 )
+
+summed_emissions_pivot <- summed_emissions_pivot |>
+  mutate(Year = as.numeric(name))
+
+summed_emissions_pivot
+
+summed_emissions_pivot |>
+  ggplot(aes(x = Year, y = value)) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  theme_minimal() +
+  labs(x = "Year", y = "Total Green House Gas Emissions", title =  "Total Green House Gas Emissions in Minnesota", subtitle = "From 2010-2020", caption = "Data: EPA Flight \n ghgdata.epa.gov")
+
+```
