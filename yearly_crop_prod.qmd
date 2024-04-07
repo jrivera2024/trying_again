@@ -13,6 +13,7 @@ Main Goals of this section
 
 ```{r library-load}
 #|echo = false
+#|warning
 
 library(tidyr)
 library(tidyverse)
@@ -31,6 +32,8 @@ crops <- read.csv("Crops.csv")
 crops |>
   group_by(Ag.District)|>
   filter(Year == "2010") |>
-  summarise(mean = mean(CORN...ACRES.PLANTED))
+  summarise(mean = mean(CORN..GRAIN...YIELD..MEASURED.IN.BU...ACRE),
+            med = median(CORN..GRAIN...YIELD..MEASURED.IN.BU...ACRE),
+            stand_d = sd(CORN..GRAIN...YIELD..MEASURED.IN.BU...ACRE))
 
 ```
