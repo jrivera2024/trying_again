@@ -55,7 +55,8 @@ total_animals |>
   arrange(desc(Max_animals))
                                                   
 ```
-## Join Fertilizer 
+
+## Join Fertilizer
 
 ```{r}
 
@@ -65,5 +66,5 @@ ammonia_manure_joined
 
 
 ```
-```
 
+\`\`\`

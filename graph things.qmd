@@ -3,7 +3,9 @@ title: "MUDAC"
 format: html
 editor: visual
 ---
+
 # Libraries
+
 ```{r}
 library(tidyverse)
 library(tidyr)
@@ -12,6 +14,7 @@ library(patchwork)
 ```
 
 # Loading Data Sets
+
 ```{r loading-data-set}
 
 animals <- read.csv("Animals.csv")
@@ -55,7 +58,9 @@ print(corn_10)
 The `echo: false` option disables the printing of code (only output is displayed).
 
 ## Fertilizer VS Ammonia
+
 ### Fertilizer
+
 ```{r fertilizer_ammonia}
 
 fert_con <- FertilizerConsumption |>
@@ -63,7 +68,9 @@ fert_con <- FertilizerConsumption |>
   group_by(Ag.District, Year) |>
   summarise(total_use_ammonia = sum(Ammonia..82.0.0.))
 ```
+
 ### Ammonia Vs Manure
+
 ```{r fert_man}
 #shit 
 shitty_animals <- animals |>
@@ -95,7 +102,9 @@ total_animals |>
   arrange(desc(Max_animals))
                                                   
 ```
+
 ### joined fert/amm
+
 ```{r joined}
 glimpse(max_manure)
 
@@ -109,5 +118,3 @@ joined_amm_shit |>
   geom_point() +
   geom_smooth(se = FALSE)
 ```
-
-
