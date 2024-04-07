@@ -1,0 +1,145 @@
+---
+title: "MUDAC"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(patchwork)
+```
+
+You can add options to executable code like this
+
+```{r data-clean}
+#| warning: false
+#| results: hide
+
+crops <- read.csv("Crops.csv")
+
+crops <- crops |>
+  filter(Ag.District != "NORTHEAST")
+
+crops <- crops|>
+  rename(corn_yield = CORN..GRAIN...YIELD..MEASURED.IN.BU...ACRE,
+         soy_yield = SOYBEANS...YIELD..MEASURED.IN.BU...ACRE,
+         beet_yield = SUGARBEETS...YIELD..MEASURED.IN.TONS...ACRE)
+
+```
+
+```{r corn-data}
+#| warning: false
+
+district_year_corn <- crops |>
+  select(Year,Ag.District,corn_yield)|>
+    group_by(Ag.District,Year)|>
+  summarize(mean = mean(corn_yield, na.rm = T),
+            med = median(corn_yield, na.rm = T),
+            sd = sd(corn_yield,na.rm = T))
+
+
+district_year_corn|>
+  ggplot(aes(x=Year, y= mean, color = Ag.District))+
+  geom_point()+
+  geom_smooth(se= FALSE)+
+  facet_wrap(~Ag.District)
+
+
+        
+```
+
+```{r soybeans}
+#| warning: false
+
+
+district_year_beans <- crops |>
+  select(Year,Ag.District,soy_yield)|>
+    group_by(Ag.District,Year)|>
+  summarize(mean = mean(soy_yield, na.rm = T),
+            med = median(soy_yield, na.rm = T),
+            sd = sd(soy_yield,na.rm = T))
+
+district_year_beans|>
+  ggplot(aes(x=Year, y= mean, color = Ag.District))+
+  geom_point()+
+  geom_smooth(se= FALSE)+
+  facet_wrap(~Ag.District)
+
+
+
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+```{r beets}
+#| warning: false
+
+district_year_beet <- crops |>
+  select(Year,Ag.District,beet_yield)|>
+    group_by(Ag.District,Year)|>
+  summarize(mean = mean(beet_yield, na.rm = T),
+            med = median(beet_yield, na.rm = T),
+            sd = sd(beet_yield,na.rm = T))
+
+district_year_beet|>
+  ggplot(aes(x=Year, y= mean, color = Ag.District))+
+  geom_point()+
+  geom_smooth(se= FALSE)+
+  facet_wrap(~Ag.District)
+
+
+
+```
+
+```{r cpi-ana}
+#| warning: false
+
+cpi <- read.csv("~/trying_again/CropProductivityIndex.csv")
+
+names(cpi)<-str_replace_all(names(cpi), c(" " = "." , "," = "" ))
+
+
+cpi_state <- cpi |>
+  select(CPI, Ag.District)|>
+    group_by(Ag.District)|>
+  summarize(mean = mean(CPI, na.rm = T),
+            med = median(CPI, na.rm = T),
+            sd = sd(CPI,na.rm = T))
+
+cpi_state|>
+  ggplot(aes(x=med, y= mean, color = Ag.District))+
+  geom_point()+
+  geom_smooth(se = FALSE)+
+  geom_line()
+
+
+```
+
+```{r sugar-ana}
+#| warning: false
+
+district_year_sugar <- crops |>
+  select(Year,Ag.District,SUGARBEETS...SUCROSE..MEASURED.IN.PCT)|>
+    filter(Year < "2019")|>
+    group_by(Ag.District,Year)|>
+  summarize(mean = mean(SUGARBEETS...SUCROSE..MEASURED.IN.PCT, na.rm = T),
+            med = median(SUGARBEETS...SUCROSE..MEASURED.IN.PCT, na.rm = T),
+            sd = sd(SUGARBEETS...SUCROSE..MEASURED.IN.PCT,na.rm = T))
+
+district_year_sugar|>
+  ggplot(aes(x=Year, y= mean, color = Ag.District, alpha = 0.5))+
+  geom_point()+
+  geom_smooth(se= FALSE, alpha = 0.1)
+  
+#no data past 2019
+```
