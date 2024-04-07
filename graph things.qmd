@@ -118,3 +118,69 @@ joined_amm_shit |>
   geom_point() +
   geom_smooth(se = FALSE)
 ```
+<<<<<<< HEAD
+=======
+
+```{r emissions}
+
+library(readr)
+emissions_1 <- read_csv("emissions_1.csv")
+View(emissions_1)
+
+
+emissions_1$"2011_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2011`))
+emissions_1$"2012_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2012`))
+emissions_1$"2013_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2013`))
+emissions_1$"2014_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2014`))
+emissions_1$"2015_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2015`))
+emissions_1$"2016_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2016`))
+emissions_1$"2017_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2017`))
+emissions_1$"2018_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2018`))
+emissions_1$"2019_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2019`))
+emissions_1$"2020_emissions" <- as.numeric(gsub(",","", emissions_1$`TOTAL REPORTED EMISSIONS, 2020`))
+
+emissions_1 <- emissions_1 |>
+  na.omit()
+
+emissions_2 <- emissions_1 |>
+  select("2011_emissions","2012_emissions",
+         "2013_emissions","2014_emissions",
+         "2015_emissions","2016_emissions",
+         "2017_emissions","2018_emissions",
+         "2019_emissions","2020_emissions") 
+
+
+summed_emissions <- emissions_2|>
+  summarise(`2011` = sum(`2011_emissions`), 
+            `2012` = sum(`2012_emissions`),
+            `2013` = sum(`2013_emissions`), 
+            `2014` = sum(`2014_emissions`),
+            `2015` = sum(`2015_emissions`),
+            `2016` = sum(`2016_emissions`),
+            `2017` = sum(`2017_emissions`),
+            `2018` = sum(`2018_emissions`),
+            `2019` = sum(`2019_emissions`),
+            `2020` = sum(`2020_emissions`)) 
+
+summed_emissions
+            
+summed_emissions_pivot <- pivot_longer(summed_emissions, cols = 1:10 )
+
+summed_emissions_pivot <- summed_emissions_pivot |>
+  mutate(Year = as.numeric(name))
+
+summed_emissions_pivot
+
+summed_emissions_pivot |>
+  ggplot(aes(x = Year, y = value)) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  theme_minimal() +
+  labs(x = "Year", y = "Total Green House Gas Emissions", title =  "Total Green House Gas Emissions in Minnesota", subtitle = "From 2010-2020", caption = "Data: EPA Flight \n ghgdata.epa.gov")
+
+
+```
+
+
+
+>>>>>>> 9720828990e9da327170ba0830aa52a71619770a
