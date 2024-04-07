@@ -35,7 +35,6 @@ tillable <- read.csv("TillableLand.csv")
 FertilizerConsumption <- read.csv("FertilizerConsumption.csv")
 
 Crops <- read.csv("Crops.csv")
-Fertilizer_Con <- read.csv("FertilizerConsumption.csv")
 
 ```
 
